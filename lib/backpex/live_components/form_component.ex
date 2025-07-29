@@ -119,12 +119,18 @@ defmodule Backpex.FormComponent do
       |> drop_readonly_changes(fields, socket.assigns)
       |> put_upload_change(socket, :validate)
 
+    # dbg({:change_params, change})
+
     opts = [target: target, assocs: assocs]
     changeset = Resource.change(item, change, fields, socket.assigns, live_resource, opts)
 
+    # dbg(changeset)
     form = Phoenix.Component.to_form(changeset, as: :change)
+    form = AshPhoenix.Form.validate(form, change)
+    # changeset = form.params
+    # dbg(form)
 
-    send(self(), {:update_changeset, changeset})
+    # send(self(), {:update_changeset, changeset})
 
     socket
     |> assign(:form, form)
