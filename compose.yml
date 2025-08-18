@@ -9,7 +9,8 @@ services:
     environment:
       - STARTUP_COMMAND_1=mix do deps.get, ecto.create, ecto.migrate
       - STARTUP_COMMAND_2=yarn install --pure-lockfile
-      - STARTUP_COMMAND_3=mix assets.setup
+      - STARTUP_COMMAND_3=yarn playwright install chromium --with-deps
+      - STARTUP_COMMAND_4=mix assets.setup
     volumes:
       - .:/opt/app
     ports:
@@ -19,7 +20,7 @@ services:
       postgres:
         condition: service_healthy
   postgres:
-    image: postgres:16.9@sha256:918e8e72b35b5370901965ce3da5a355c3537cb5e10c38e82c2b6f174b758334
+    image: postgres:16.10@sha256:66a5efb5677ffac1037774a0e141fd3a4c035c9c0c0e624c9cc980dfa10f45e5
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
