@@ -23,11 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        elixir: ["1.17", "1.16"]
-        erlang: ["27.1", "26.2"]
-        exclude:
+        include:
           - elixir: "1.16"
-            erlang: "27.1"
+            otp: "26.2"
+
+          - elixir: "1.17"
+            otp: "27.3"
+
+          - elixir: "1.18"
+            otp: "28.0"
 
     steps:
       - name: Checkout code
@@ -35,13 +39,13 @@ jobs:
 
       - uses: erlef/setup-beam@e6d7c94229049569db56a7ad5a540c051a010af9 # v1.20.4
         with:
-          otp-version: ${{ matrix.erlang }}
+          otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
 
       - name: Setup node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 20
+          node-version: 22
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
@@ -54,8 +58,8 @@ jobs:
           path: |
             deps
             _build
-          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.erlang }}-build-deps-mixlockhash-${{ env.MIX_LOCK_HASH }}
-          restore-keys:  ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.erlang }}-build-deps-
+          key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-deps-mixlockhash-${{ env.MIX_LOCK_HASH }}
+          restore-keys:  ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-build-deps-
 
       - name: Install dependencies
         if: steps.restore-cache.outputs.cache-hit != 'true'
@@ -99,6 +103,9 @@ jobs:
       - name: Gettext Check
         run: mix gettext.extract --check-up-to-date
 
+      - name: Check assets up-to-date
+        run: mix assets.check
+
   publish:
     needs: test
     if: github.event_name == 'release'
@@ -132,7 +139,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16.10@sha256:66a5efb5677ffac1037774a0e141fd3a4c035c9c0c0e624c9cc980dfa10f45e5
+        image: postgres:16.10@sha256:156c96ceaa08b09b539febd051147cf9191233378b7c995c93bc54f8bf400cad
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -157,7 +164,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 20
+          node-version: 22
           cache: 'yarn'
           cache-dependency-path: demo/yarn.lock
 
