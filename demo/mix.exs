@@ -47,7 +47,7 @@ defmodule Demo.MixProject do
       {:phoenix_test, "~> 0.7.1", only: :test, runtime: false},
       {:phoenix_test_playwright, "~> 0.7.0", only: :test, runtime: false},
       {:a11y_audit, "~> 0.2.3", only: :test},
-      {:live_debugger, "~> 0.3", only: :dev},
+      {:live_debugger, "~> 0.4", only: :dev},
       {:quokka, "~> 2.9", only: [:dev, :test], runtime: false},
 
       # core
@@ -70,6 +70,8 @@ defmodule Demo.MixProject do
       # application
       {:backpex, path: "../."},
       {:phoenix_ecto, "~> 4.0"},
+      {:igniter, "~> 0.6"},
+      {:igniter_js, "~> 0.4"},
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:ecto_psql_extras, "~> 0.8"},
